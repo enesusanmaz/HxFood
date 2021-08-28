@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace HxFood.Services.Catalog.Services
 {
@@ -20,14 +21,19 @@ namespace HxFood.Services.Catalog.Services
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<Category> _categoryCollection;
         private readonly IMapper _mapper;
-        private readonly RedisService _redisService;
-        private readonly TimeSpan expiry = new TimeSpan(0, 0, 5, 0);
+        private readonly IDistributedCache _distributedCache;
+        #endregion
 
+        #region Cache Options
+        private readonly DistributedCacheEntryOptions _cacheOptions = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(5)
+        };
         #endregion
 
         #region Constructor
 
-        public ProductService(IMapper mapper, IDatabaseSettings databaseSettings, RedisService redisService)
+        public ProductService(IMapper mapper, IDatabaseSettings databaseSettings, IDistributedCache distributedCache)
         {
             var client = new MongoClient(databaseSettings.ConnectionString);
             var database = client.GetDatabase(databaseSettings.DatabaseName);
@@ -36,7 +42,7 @@ namespace HxFood.Services.Catalog.Services
             _categoryCollection = database.GetCollection<Category>(databaseSettings.CategoryCollectionName);
 
             _mapper = mapper;
-            _redisService = redisService;
+            _distributedCache = distributedCache;
         }
 
         #endregion
@@ -66,7 +72,7 @@ namespace HxFood.Services.Catalog.Services
 
         public async Task<Response<ProductDto>> GetByIdAsync(string id)
         {
-            var existProduct = await _redisService.GetDb().StringGetAsync(id);
+            var existProduct = await _distributedCache.GetStringAsync(id);
 
             if (string.IsNullOrEmpty(existProduct))
             {
@@ -80,7 +86,7 @@ namespace HxFood.Services.Catalog.Services
                 product.Category =
                     await _categoryCollection.Find<Category>(cat => cat.Id == product.CategoryId).FirstAsync();
 
-                await _redisService.GetDb().StringSetAsync(product.Id, JsonSerializer.Serialize(product), expiry);
+                await _distributedCache.SetStringAsync(product.Id, JsonSerializer.Serialize(product), _cacheOptions);
 
                 return Response<ProductDto>.Success(_mapper.Map<ProductDto>(product), 200);
             }
@@ -94,7 +100,7 @@ namespace HxFood.Services.Catalog.Services
         {
             var newProduct = _mapper.Map<Product>(productCreateDto);
             await _productCollection.InsertOneAsync(newProduct);
-            await _redisService.GetDb().StringSetAsync(newProduct.Id, JsonSerializer.Serialize(newProduct), expiry);
+            await _distributedCache.SetStringAsync(newProduct.Id, JsonSerializer.Serialize(newProduct), _cacheOptions);
             return Response<ProductDto>.Success(_mapper.Map<ProductDto>(newProduct), 201);
         }
 
@@ -109,7 +115,7 @@ namespace HxFood.Services.Catalog.Services
                 return Response<NoContent>.Fail("Product not found", 404);
             }
 
-            await _redisService.GetDb().StringSetAsync(result.Id, JsonSerializer.Serialize(result));
+            await _distributedCache.SetStringAsync(result.Id, JsonSerializer.Serialize(result), _cacheOptions);
 
             return Response<NoContent>.Success(204);
         }
@@ -119,7 +125,7 @@ namespace HxFood.Services.Catalog.Services
             var result = await _productCollection.DeleteOneAsync(product => product.Id == id);
             if (result.DeletedCount > 0)
             {
-                await _redisService.GetDb().KeyDeleteAsync(id);
+                await _distributedCache.RemoveAsync(id);
                 return Response<NoContent>.Success(204);
             }
             else

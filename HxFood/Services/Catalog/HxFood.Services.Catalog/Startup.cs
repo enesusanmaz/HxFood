@@ -3,6 +3,8 @@ using HxFood.Services.Catalog.Services.Interfaces;
 using HxFood.Services.Catalog.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,18 +42,12 @@ namespace HxFood.Services.Catalog
 
             #region Redis Configuration
 
-            services.Configure<RedisSettings>(Configuration.GetSection("RedisSettings"));
-
-            services.AddSingleton<RedisService>(sp =>
+            services.AddStackExchangeRedisCache(options =>
             {
-                var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
-
-                var redis = new RedisService(redisSettings.Host, redisSettings.Port);
-
-                redis.Connect();
-
-                return redis;
+                options.Configuration = Configuration.GetSection("RedisSettings")["Url"];
             });
+
+            services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
 
             #endregion
 
