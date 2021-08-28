@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{9961D1A8-1E84-4A0C-8AB2-313E9579354C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{A3975CD0-7548-428E-8D76-16AB747876ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HxFood.Services.Catalog", "Services\Catalog\HxFood.Services.Catalog\HxFood.Services.Catalog.csproj", "{BE5EB7B7-8190-41C6-BB27-5902121EE9A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3A47B4B4-9F09-4C23-8F36-BEADC8C64D46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HxFood.Shared", "Shared\HxFood.Shared\HxFood.Shared.csproj", "{9767F475-97A4-4FF6-8EB5-C523AC535DDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE5EB7B7-8190-41C6-BB27-5902121EE9A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5EB7B7-8190-41C6-BB27-5902121EE9A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5EB7B7-8190-41C6-BB27-5902121EE9A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5EB7B7-8190-41C6-BB27-5902121EE9A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9767F475-97A4-4FF6-8EB5-C523AC535DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9767F475-97A4-4FF6-8EB5-C523AC535DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9767F475-97A4-4FF6-8EB5-C523AC535DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9767F475-97A4-4FF6-8EB5-C523AC535DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A3975CD0-7548-428E-8D76-16AB747876ED} = {9961D1A8-1E84-4A0C-8AB2-313E9579354C}
+		{BE5EB7B7-8190-41C6-BB27-5902121EE9A3} = {A3975CD0-7548-428E-8D76-16AB747876ED}
+		{9767F475-97A4-4FF6-8EB5-C523AC535DDB} = {3A47B4B4-9F09-4C23-8F36-BEADC8C64D46}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2EE320A7-E994-4C5E-9624-B7723794E958}
+	EndGlobalSection
+EndGlobal
