@@ -37,11 +37,15 @@ namespace HxFood.Services.Catalog
 
             services.AddAutoMapper(typeof(Startup));
 
+            #region MongoDb Configuration
+
             services.Configure<DatabaseSettings>(Configuration.GetSection("DatabaseSettings"));
             services.AddSingleton<IDatabaseSettings>(sp =>
             {
                 return sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
             });
+
+            #endregion
 
             #region Redis Configuration
 
