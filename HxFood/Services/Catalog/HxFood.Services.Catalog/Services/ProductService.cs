@@ -45,15 +45,14 @@ namespace HxFood.Services.Catalog.Services
             _distributedCache = distributedCache;
         }
 
-        #endregion
+        #endregion                                  
 
         #region Crud Operations
 
         public async Task<Response<List<ProductDto>>> GetAllAsync()
         {
             var products = await _productCollection.Find(product => true).ToListAsync();
-
-
+            
             if (products.Any())
             {
                 foreach (var product in products)
@@ -90,10 +89,8 @@ namespace HxFood.Services.Catalog.Services
 
                 return Response<ProductDto>.Success(_mapper.Map<ProductDto>(product), 200);
             }
-            else
-            {
-                return Response<ProductDto>.Success(_mapper.Map<ProductDto>(JsonSerializer.Deserialize<Product>(existProduct)), 200);
-            }
+
+            return Response<ProductDto>.Success(_mapper.Map<ProductDto>(JsonSerializer.Deserialize<Product>(existProduct)), 200);
         }
 
         public async Task<Response<ProductDto>> CreateAsync(ProductCreateDto productCreateDto)
@@ -128,10 +125,8 @@ namespace HxFood.Services.Catalog.Services
                 await _distributedCache.RemoveAsync(id);
                 return Response<NoContent>.Success(204);
             }
-            else
-            {
-                return Response<NoContent>.Fail("Product not found", 404);
-            }
+
+            return Response<NoContent>.Fail("Product not found", 404);
         }
 
 

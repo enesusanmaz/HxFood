@@ -75,10 +75,7 @@ namespace HxFood.Services.Catalog.Services
            {
                return Response<NoContent>.Success(204);
            }
-           else
-           {
-                return Response<NoContent>.Fail("Category not found",404);
-           }
+           return Response<NoContent>.Fail("Category not found",404);
         }
 
         #endregion
